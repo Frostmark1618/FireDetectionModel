@@ -1,167 +1,263 @@
-# FireDetection App
+# 🔥 FireDetectionModel
 
-Welcome to the **FireDetection** app! This application leverages Streamlit to provide real-time fire detection capabilities using machine learning and computer vision. The goal is to help prevent fire hazards and assist in timely emergency responses.
+> A machine-learning based fire detection system combining computer vision with environmental monitoring.
 
+This project explores an integrated approach to fire detection using **CNN-based image classification**, environmental sensors, an Arduino-based monitoring layer, and a Streamlit interface.
 
-
-## 📋 Features
-
-- **Real-time Fire Detection**: Detect fire using detected images or live video.
-- **Fast and Accurate**: Uses machine learning models to identify potential fire hazards.
-- **User-friendly Interface**: Intuitive UI to easily detected images and get results.
-- **Interactive Results**: View detection outputs with confidence scores and fire zones.
+The system is designed to detect potential fire conditions and support timely monitoring and alerting.
 
 ---
 
+## ✨ Features
 
+- 🔥 CNN-based fire image classification
+- 📷 Camera-based visual fire detection
+- 🌡️ Temperature monitoring using DHT11
+- 💨 Smoke monitoring using MQ2
+- 🧠 Machine learning based detection
+- 📊 Streamlit-based monitoring interface
+- 📱 SMS alert integration using Twilio
+- 🔌 Arduino-based sensor integration
+- 📈 Fire and sensor data visualization
 
+---
 
+## 🧠 System Architecture
 
+```text
+Camera
+   │
+   ▼
+Fire Image
+   │
+   ▼
+CNN Model
+   │
+   ▼
+Fire / No Fire
+   │
+   ├───────────────┐
+   │               │
+   ▼               ▼
+Arduino         Streamlit
+   │               │
+   ├── DHT11       ├── Fire Data
+   │               ├── Sensor Data
+   └── MQ2         └── Monitoring
+   │
+   ▼
+Environmental Data
+   │
+   ▼
+Alert System
+   │
+   ▼
+Twilio SMS
+```
 
+---
 
+## 🔬 Machine Learning
 
+The project uses a **Convolutional Neural Network (CNN)** for image-based fire detection.
 
+The model processes fire-related visual patterns and classifies the input image according to the trained detection categories.
 
-# Table of Contents
-Introduction
+The system can combine the visual prediction with environmental signals such as:
 
-Features
+- Temperature
+- Smoke level
+- Fire detection status
 
-Technologies Used
+---
 
-Setup Instructions
+## 🌡️ Environmental Monitoring
 
-Usage
+The hardware layer uses an Arduino Uno together with environmental sensors.
 
-Error Handling
+| Component | Purpose |
+|---|---|
+| Arduino Uno | Sensor interface and control |
+| DHT11 | Temperature monitoring |
+| MQ2 | Smoke / gas sensing |
+| Camera | Visual fire detection |
 
-Future Enhancements
+---
 
-Contact
+## 📊 Streamlit Application
 
-# Introduction
-The Fire Detection Project is designed to detect fires in real-time using a combination of hardware and machine learning. It uses a camera for image-based fire detection, smoke and temperature sensors for environmental monitoring, and an Arduino board to interface with the sensors. The system sends alerts via SMS when a fire is detected.
+The Streamlit interface provides a simple monitoring layer for the system.
 
-# Features
-Real-time fire detection using image classification with Convolutional Neural Networks (CNN).
+It can display:
 
-Smoke and temperature monitoring using MQ2 and DHT11 sensors.
+- Fire detection status
+- Temperature readings
+- Smoke levels
+- Sensor information
+- Fire-related monitoring data
 
-Automated SMS alerts during fire detection using Twilio.
+---
 
-Data storage and visualization in the web application.
+## 📱 Alert System
 
-Separate display pages for fire data and sensor data.
+The project includes **Twilio-based SMS alert integration** for fire detection events.
 
-Technologies Used
-# Hardware:
+For security, credentials and recipient phone numbers must be configured privately.
 
-Arduino Uno Board (with DHT11 Temperature Sensor)
+**Never commit:**
 
-MQ2 Smoke Sensor
+- Twilio Account SID
+- Twilio Auth Token
+- Twilio phone numbers
+- Personal recipient phone numbers
+- Other API credentials
 
-DHT11 Temperature Sensor
+Example configuration:
 
-Camera for Fire Image Detection
+```python
+account_sid = "YOUR_ACCOUNT_SID"
+auth_token = "YOUR_AUTH_TOKEN"
+twilio_number = "YOUR_TWILIO_NUMBER"
+recipient_number = "YOUR_RECIPIENT_NUMBER"
+```
 
-# Software:
+Use environment variables or another secure configuration method for real credentials.
 
-Backend: SQLite (or any preferred database)
+---
 
-Frontend: Streamlit
+## 🛠️ Tech Stack
 
-Machine Learning: TensorFlow (CNN for image classification)
+| Category | Technologies |
+|---|---|
+| Programming | Python |
+| Machine Learning | TensorFlow |
+| Computer Vision | CNN |
+| Interface | Streamlit |
+| Hardware | Arduino Uno |
+| Sensors | DHT11, MQ2 |
+| Communication | Twilio SMS |
+| Data | SQLite / application storage |
 
-SMS Service: Twilio
+---
 
-# Setup Instructions
-1. Prerequisites:
-Install Python 3.10.0 .
+## 🚀 Getting Started
 
-Ensure Arduino is connected to your computer.
+### Prerequisites
 
-2. Clone the Repository:
-bash
-Copy
-git clone [repository-url]
-cd [repository-name]
-3. Install Required Packages:
-bash
-Copy
- 'pip install streamlit mysql-connector-python pyserial tensorflow numpy pandas opencv-python pyttsx3 twilio gdown'
-4. Arduino Setup:
-Open the provided Arduino code file in the Arduino IDE.
+- Python 3.10
+- Arduino IDE
+- Arduino Uno
+- DHT11 sensor
+- MQ2 sensor
+- Camera
+- Required Python dependencies
 
-Upload the code to the Arduino Uno board.
+### Clone the repository
 
-5. Run the Web App:
-bash
-Copy
+```bash
+git clone https://github.com/Frostmark1618/FireDetectionModel.git
+cd FireDetectionModel
+```
+
+### Install dependencies
+
+Install the packages required by the project environment.
+
+```bash
+pip install streamlit mysql-connector-python pyserial tensorflow numpy pandas opencv-python pyttsx3 twilio gdown
+```
+
+### Arduino Setup
+
+1. Open the Arduino source file in Arduino IDE.
+2. Connect the Arduino Uno.
+3. Connect the required sensors.
+4. Upload the Arduino program.
+5. Ensure the serial connection is available to the application.
+
+### Run the application
+
+```bash
 streamlit run W.py
-Usage
-Open the web application in your browser (usually at http://localhost:8501).
+```
 
-Use the sidebar to view:
+The Streamlit application should then be available locally.
 
-Fire Data: Displays time, smoke level, temperature, and fire detection status (0 = No Fire, 1 = Fire).
+---
 
-Sensor Display Data: Shows the latest smoke and temperature data when no fire is detected.
+## 📂 Project Structure
 
-Error Handling
-Ensure all required fields are filled before submitting data.
+The repository contains the machine-learning, Streamlit, and Arduino components required for the fire detection workflow.
 
-Verify that the Arduino is properly connected before running the app.
+A typical flow is:
 
-Check for correct Twilio setup to ensure SMS alerts are sent.
+```text
+FireDetectionModel/
+│
+├── Machine Learning / CNN
+├── Streamlit Application
+├── Arduino / Sensor Code
+├── Data / Model Assets
+└── README.md
+```
 
-Future Enhancements
-User Authentication: Support for multiple users.
+---
 
-Task Prioritization: Features to prioritize tasks.
+## 🎯 Use Cases
 
-Notifications: Alerts for upcoming due dates.
+This project can serve as a prototype for:
 
-UI/UX Improvements: Enhanced user interface and experience.
+- Fire detection systems
+- Environmental monitoring
+- IoT-based safety systems
+- Computer-vision assisted monitoring
+- Sensor + ML hybrid systems
+- Real-time alerting workflows
 
-# Twilio SMS Setup
-To enable SMS alerts:
+---
 
-Create a Twilio Account: Twilio Signup
+## ⚠️ Limitations
 
-Get your account_sid, auth_token, and twilio_number.
+This project should be treated as a **prototype / educational system**, not as a certified life-safety or fire-protection system.
 
-Update the W.py file:
+Detection quality can depend on:
 
-python
-Copy
-# Twilio Account Setup
-account_sid = 'YOUR_ACCOUNT_SID'
-auth_token = 'YOUR_AUTH_TOKEN'
-twilio_number = 'YOUR_TWILIO_NUMBER'
-Set recipient numbers:
+- Training data
+- Lighting and camera conditions
+- Model performance
+- Sensor accuracy
+- Hardware setup
+- Environmental conditions
+- Network and alert-service availability
 
-python
-Copy
-recipient_number1 = '+917895467834'
-recipient_number2 = '+917253715211'
-recipient_number3 = '+915646546555'
-recipient_number4 = '+914565852425'
+Real-world deployment would require extensive validation, safety engineering, and domain-specific certification.
 
+---
 
-# Software Development
-The software for the Fire Detection Project is developed to integrate hardware components (camera, smoke sensor, temperature sensor, and Arduino board) with machine learning algorithms for real-time fire detection. The software includes:
+## 🔮 Future Improvements
 
-Backend Development: Handling data storage, sensor communication, and real-time processing using SQLite.
+- Improved CNN architecture and training pipeline
+- Better fire / smoke classification
+- Model evaluation metrics
+- Real-time video inference
+- Improved sensor fusion
+- Historical monitoring dashboards
+- Secure configuration management
+- Containerized deployment
+- Better testing and monitoring
 
-Frontend Development: A user-friendly web interface built with Streamlit for visualizing fire data and sensor statistics.
+---
 
-Machine Learning Integration: Implementation of Convolutional Neural Networks (CNN) for accurate fire detection through image classification.
+## 👨‍💻 Author
 
-Alert System: Automated SMS alerts using Twilio when a fire is detected.
+**Riddhiman Adak**
 
-The software is designed to be scalable and can be enhanced with additional features in the future. Future improvements will focus on optimizing performance, adding advanced analytics, and expanding the system’s capabilities for better fire detection and user experience.
+B.Tech CSE (AI & ML)
 
+[GitHub](https://github.com/Frostmark1618) •
+[Portfolio](https://riddhi-s-vision.vercel.app) •
+[LinkedIn](https://www.linkedin.com/in/riddhiman-adak-5b6336307/)
 
-# Contact
-For any questions, feedback, or suggestions, feel free to contact me via:
-GitHub: (https://github.com/RIDDHI-ADAK)
+---
+
+⭐ If you find this project interesting, consider starring the repository.
