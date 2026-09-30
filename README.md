@@ -1,10 +1,10 @@
 # 🔥 FireDetectionModel
 
-> A machine-learning based fire detection system combining computer vision with environmental monitoring.
+> A machine-learning based fire detection system combining computer vision, environmental sensing, and real-time monitoring.
 
-This project explores an integrated approach to fire detection using **CNN-based image classification**, environmental sensors, an Arduino-based monitoring layer, and a Streamlit interface.
+This project explores an integrated fire detection workflow using **CNN-based image classification**, environmental sensor data, an Arduino-based hardware layer, and a Streamlit monitoring application.
 
-The system is designed to detect potential fire conditions and support timely monitoring and alerting.
+The system combines visual and environmental signals to identify potential fire conditions and support alerting.
 
 ---
 
@@ -12,107 +12,187 @@ The system is designed to detect potential fire conditions and support timely mo
 
 - 🔥 CNN-based fire image classification
 - 📷 Camera-based visual fire detection
-- 🌡️ Temperature monitoring using DHT11
-- 💨 Smoke monitoring using MQ2
-- 🧠 Machine learning based detection
-- 📊 Streamlit-based monitoring interface
+- 🌡️ Temperature and humidity monitoring using DHT11
+- 💨 Analog environmental/smoke sensing
+- 🧠 Machine-learning based fire prediction
+- 🔀 Sensor + camera based prediction workflow
+- 📊 Streamlit monitoring interface
 - 📱 SMS alert integration using Twilio
 - 🔌 Arduino-based sensor integration
-- 📈 Fire and sensor data visualization
+- 🗄️ SQLite-based data storage
+- 🔊 Text-to-speech alerts
+- 📈 Sensor and fire-data monitoring
 
 ---
 
 ## 🧠 System Architecture
 
 ```text
-Camera
-   │
-   ▼
-Fire Image
-   │
-   ▼
-CNN Model
-   │
-   ▼
-Fire / No Fire
-   │
-   ├───────────────┐
-   │               │
-   ▼               ▼
-Arduino         Streamlit
-   │               │
-   ├── DHT11       ├── Fire Data
-   │               ├── Sensor Data
-   └── MQ2         └── Monitoring
-   │
-   ▼
-Environmental Data
-   │
-   ▼
-Alert System
-   │
-   ▼
-Twilio SMS
+                    ┌──────────────────┐
+                    │      Camera      │
+                    └────────┬─────────┘
+                             │
+                             ▼
+                    ┌──────────────────┐
+                    │   CNN Model      │
+                    │   model.h5       │
+                    └────────┬─────────┘
+                             │
+                             ▼
+                    ┌──────────────────┐
+                    │ Visual Prediction│
+                    └────────┬─────────┘
+                             │
+                             │
+        ┌────────────────────┴────────────────────┐
+        │                                         │
+        ▼                                         ▼
+┌──────────────────┐                    ┌──────────────────┐
+│     Arduino      │                    │    Streamlit     │
+│                  │                    │   Application    │
+│ DHT11 + Sensor   │                    │                  │
+└────────┬─────────┘                    └────────┬─────────┘
+         │                                       │
+         ▼                                       ▼
+┌──────────────────┐                    ┌──────────────────┐
+│ Temperature /    │                    │ Sensor + Camera  │
+│ Sensor Data      │───────────────────▶│ Prediction Logic │
+└──────────────────┘                    └────────┬─────────┘
+                                                 │
+                                                 ▼
+                                      ┌────────────────────┐
+                                      │ Fire / No-Fire     │
+                                      │ Decision           │
+                                      └─────────┬──────────┘
+                                                │
+                           ┌────────────────────┴──────────────┐
+                           │                                   │
+                           ▼                                   ▼
+                  ┌──────────────────┐               ┌──────────────────┐
+                  │ SQLite Database  │               │ Twilio SMS Alert │
+                  └──────────────────┘               └──────────────────┘
 ```
 
 ---
 
-## 🔬 Machine Learning
+## 🤖 Machine Learning
 
-The project uses a **Convolutional Neural Network (CNN)** for image-based fire detection.
+The project uses a trained **TensorFlow/Keras CNN model** for image-based fire detection.
 
-The model processes fire-related visual patterns and classifies the input image according to the trained detection categories.
+The trained model is stored as:
 
-The system can combine the visual prediction with environmental signals such as:
+```text
+model.h5
+```
 
-- Temperature
-- Smoke level
-- Fire detection status
+The application processes an input image, prepares it for the trained model, and generates a fire-related prediction.
+
+A second machine-learning component is also included:
+
+```text
+IFELSEModelPartNew.pkl
+```
+
+This model is used as part of the prediction workflow combining:
+
+- Camera prediction
+- Smoke/sensor value
+- Temperature value
 
 ---
 
-## 🌡️ Environmental Monitoring
+## 📷 Computer Vision Pipeline
 
-The hardware layer uses an Arduino Uno together with environmental sensors.
+The image detection workflow follows this general process:
+
+```text
+Camera / Image
+      │
+      ▼
+Image Loading
+      │
+      ▼
+Resize to Model Input
+      │
+      ▼
+Pixel Normalization
+      │
+      ▼
+CNN Inference
+      │
+      ▼
+Prediction Score
+```
+
+The application uses OpenCV and TensorFlow/Keras for the computer-vision workflow.
+
+---
+
+## 🌡️ Hardware & Environmental Monitoring
+
+The hardware layer uses an **Arduino Uno** with a DHT11 sensor and an analog sensor input.
 
 | Component | Purpose |
 |---|---|
-| Arduino Uno | Sensor interface and control |
-| DHT11 | Temperature monitoring |
-| MQ2 | Smoke / gas sensing |
+| Arduino Uno | Hardware interface |
+| DHT11 | Temperature and humidity |
+| Analog sensor | Environmental/smoke-related signal |
+| LED | Local hardware indication |
 | Camera | Visual fire detection |
+
+The Arduino communicates with the Python application through a **serial connection at 9600 baud**.
 
 ---
 
 ## 📊 Streamlit Application
 
-The Streamlit interface provides a simple monitoring layer for the system.
+The main application is:
 
-It can display:
+```text
+Fire Detection Project/app.py
+```
 
-- Fire detection status
-- Temperature readings
-- Smoke levels
-- Sensor information
-- Fire-related monitoring data
+The Streamlit interface provides the application layer for:
+
+- Fire detection
+- Sensor monitoring
+- Camera-based prediction
+- Database interaction
+- Alerting
+- Text-to-speech feedback
+
+The application also contains database functionality for storing sensor and fire-related information.
+
+---
+
+## 🗄️ Data Storage
+
+The application uses **SQLite** for local data storage.
+
+The repository contains SQLite-related files for storing and working with sensor/fire data.
+
+The application maintains tables for information such as:
+
+- Smoke values
+- Temperature
+- Fire status
+- Timestamped sensor readings
 
 ---
 
 ## 📱 Alert System
 
-The project includes **Twilio-based SMS alert integration** for fire detection events.
+The project includes **Twilio-based SMS alert functionality**.
 
-For security, credentials and recipient phone numbers must be configured privately.
+When the system detects a potential fire condition, the application can send alert messages through Twilio.
 
-**Never commit:**
+### 🔐 Security
 
-- Twilio Account SID
-- Twilio Auth Token
-- Twilio phone numbers
-- Personal recipient phone numbers
-- Other API credentials
+Credentials and personal recipient numbers **must not be committed to a public repository**.
 
-Example configuration:
+Use environment variables or another secure configuration mechanism for production use.
+
+Example:
 
 ```python
 account_sid = "YOUR_ACCOUNT_SID"
@@ -121,7 +201,22 @@ twilio_number = "YOUR_TWILIO_NUMBER"
 recipient_number = "YOUR_RECIPIENT_NUMBER"
 ```
 
-Use environment variables or another secure configuration method for real credentials.
+Never commit:
+
+- Twilio Account SID
+- Twilio Auth Token
+- Personal phone numbers
+- API keys
+- Passwords
+- Other private credentials
+
+---
+
+## 🔊 Text-to-Speech
+
+The application also includes a text-to-speech component using `pyttsx3`.
+
+This can provide local audio feedback when important events occur.
 
 ---
 
@@ -130,121 +225,172 @@ Use environment variables or another secure configuration method for real creden
 | Category | Technologies |
 |---|---|
 | Programming | Python |
-| Machine Learning | TensorFlow |
-| Computer Vision | CNN |
+| Machine Learning | TensorFlow / Keras |
+| Computer Vision | OpenCV |
 | Interface | Streamlit |
 | Hardware | Arduino Uno |
-| Sensors | DHT11, MQ2 |
-| Communication | Twilio SMS |
-| Data | SQLite / application storage |
+| Sensors | DHT11 + Analog Sensor |
+| Communication | PySerial |
+| Alerts | Twilio |
+| Database | SQLite |
+| Audio | pyttsx3 |
+| Data Processing | NumPy, Pandas |
+| Model Serialization | Joblib |
+
+---
+
+## 📁 Project Structure
+
+```text
+FireDetectionModel/
+│
+├── Fire Detection Project/
+│   │
+│   ├── app.py
+│   ├── model.h5
+│   ├── IFELSEModelPartNew.pkl
+│   ├── requirements.txt
+│   │
+│   ├── ArduinoCode/
+│   │   └── ArduinoCode.ino
+│   │
+│   ├── temp_db.sqlite
+│   ├── temp_db_converted.sqlite
+│   └── temp_db_converted.sql
+│
+└── README.md
+```
 
 ---
 
 ## 🚀 Getting Started
 
-### Prerequisites
-
-- Python 3.10
-- Arduino IDE
-- Arduino Uno
-- DHT11 sensor
-- MQ2 sensor
-- Camera
-- Required Python dependencies
-
-### Clone the repository
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/Frostmark1618/FireDetectionModel.git
 cd FireDetectionModel
 ```
 
-### Install dependencies
-
-Install the packages required by the project environment.
+### 2. Enter the project directory
 
 ```bash
-pip install streamlit mysql-connector-python pyserial tensorflow numpy pandas opencv-python pyttsx3 twilio gdown
+cd "Fire Detection Project"
 ```
 
-### Arduino Setup
+### 3. Install dependencies
 
-1. Open the Arduino source file in Arduino IDE.
+The repository includes a `requirements.txt` file.
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Arduino Setup
+
+1. Open `ArduinoCode/ArduinoCode.ino` in Arduino IDE.
 2. Connect the Arduino Uno.
-3. Connect the required sensors.
+3. Connect the DHT11 and analog sensor.
 4. Upload the Arduino program.
-5. Ensure the serial connection is available to the application.
+5. Connect the Arduino to the computer through USB.
+6. Make sure the serial connection is available.
 
-### Run the application
+### 5. Run the application
 
 ```bash
-streamlit run W.py
+streamlit run app.py
 ```
 
-The Streamlit application should then be available locally.
+The Streamlit application should then open locally in your browser.
 
 ---
 
-## 📂 Project Structure
-
-The repository contains the machine-learning, Streamlit, and Arduino components required for the fire detection workflow.
-
-A typical flow is:
+## 🔄 Detection Workflow
 
 ```text
-FireDetectionModel/
-│
-├── Machine Learning / CNN
-├── Streamlit Application
-├── Arduino / Sensor Code
-├── Data / Model Assets
-└── README.md
+Image + Sensor Data
+        │
+        ▼
+┌─────────────────────┐
+│ Camera CNN Model    │
+└──────────┬──────────┘
+           │
+           ▼
+    Camera Prediction
+           │
+           │
+           ├──────────────┐
+           │              │
+           ▼              ▼
+      Smoke Value   Temperature
+           │              │
+           └──────┬───────┘
+                  ▼
+        Prediction Model
+                  │
+                  ▼
+          Fire Probability
+                  │
+                  ▼
+       ┌──────────┴──────────┐
+       │                     │
+       ▼                     ▼
+   Database              Alert System
+       │                     │
+       ▼                     ▼
+ Sensor History          Twilio SMS
 ```
 
 ---
 
-## 🎯 Use Cases
+## 🎯 Possible Use Cases
 
 This project can serve as a prototype for:
 
-- Fire detection systems
-- Environmental monitoring
-- IoT-based safety systems
-- Computer-vision assisted monitoring
-- Sensor + ML hybrid systems
-- Real-time alerting workflows
+- 🔥 Fire detection systems
+- 📷 Computer-vision based monitoring
+- 🌡️ Environmental monitoring
+- 🤖 ML-assisted safety systems
+- 🔌 IoT-style sensor systems
+- 📱 Automated alerting workflows
+- 🧪 Academic machine-learning projects
 
 ---
 
 ## ⚠️ Limitations
 
-This project should be treated as a **prototype / educational system**, not as a certified life-safety or fire-protection system.
+This project should be considered a **prototype / educational system**, not a certified fire-protection or life-safety system.
 
-Detection quality can depend on:
+Real-world performance can depend on:
 
-- Training data
-- Lighting and camera conditions
-- Model performance
+- Training data quality
+- Camera conditions
+- Lighting
 - Sensor accuracy
-- Hardware setup
-- Environmental conditions
-- Network and alert-service availability
+- Hardware configuration
+- Model performance
+- Serial communication
+- Network availability
+- SMS service availability
 
-Real-world deployment would require extensive validation, safety engineering, and domain-specific certification.
+A production safety system would require extensive testing, validation, fail-safe design, and appropriate certification.
 
 ---
 
 ## 🔮 Future Improvements
 
-- Improved CNN architecture and training pipeline
-- Better fire / smoke classification
-- Model evaluation metrics
-- Real-time video inference
-- Improved sensor fusion
-- Historical monitoring dashboards
-- Secure configuration management
-- Containerized deployment
-- Better testing and monitoring
+- Improve CNN architecture and training pipeline
+- Add formal model evaluation metrics
+- Improve fire/smoke classification
+- Add real-time video inference
+- Improve sensor fusion
+- Add historical analytics
+- Add stronger anomaly detection
+- Improve configuration management
+- Add automated testing
+- Add containerized deployment
+- Improve monitoring and observability
+- Build a more robust production architecture
 
 ---
 
